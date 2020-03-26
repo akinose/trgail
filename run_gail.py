@@ -1,7 +1,3 @@
-"""
-An example of Generative Adversarial Imitation Learning.
-"""
-
 import argparse
 import copy
 import json
@@ -46,7 +42,7 @@ parser.add_argument('--cuda', type=int, default=0, help='cuda device number.')
 parser.add_argument('--data_parallel', action='store_true', default=False,
                     help='If True, inference is done in parallel on gpus.')
 
-parser.add_argument('--expert_dir', type=str, default='../data/expert_epis',
+parser.add_argument('--expert_dir', type=str, default='data/expert_epis',
                     help='Directory path storing file of expert trajectory.')
 parser.add_argument('--expert_fname', type=str,
                     default='Pendulum-v0_100epis.pkl', help='Name of pkl file of expert trajectory')
@@ -125,7 +121,7 @@ def task_oriented_reward(data, rew_giver, state_only=False):
                 epi['acs'], dtype=torch.float, device=get_device())
             logits, _ = rew_giver(obs, acs)
         with torch.no_grad():
-            rews = F.logsigmoid(logits).cpu().numpy() #r=log(D)
+            rews = F.logsigmoid(logits).cpu().numpy()
         epi['real_rews'] = copy.deepcopy(epi['rews'])
         epi['rews'] = rews + copy.deepcopy(epi['rews'])
     return data
